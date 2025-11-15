@@ -6,26 +6,23 @@ require('dotenv').config();
 
 const app = express();
 const Lantern = require('./models/Lantern');
-
-// -------------------- MONGO CONNECT --------------------
+-
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('MongoDB error:', err));
 
-// -------------------- MIDDLEWARE --------------------
 app.use(cors());
 app.use(express.json());
 
-// เสิร์ฟไฟล์ static
+const path = require('path');
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ให้หน้าเว็บหลักแสดง index.html
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// -------------------- API --------------------
 app.post('/api/lanterns', async (req, res) => {
   try {
     const { message } = req.body;
@@ -47,6 +44,5 @@ app.get('/api/lanterns', async (req, res) => {
   }
 });
 
-// -------------------- START SERVER --------------------
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
