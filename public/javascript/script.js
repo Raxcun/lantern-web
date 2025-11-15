@@ -23,6 +23,11 @@ function formatTextByWords(text, wordsPerLine = 2) {
 function spawnLantern(text) {
   const layer = document.getElementById('lantern-layer');
   if (!layer) return;
+  const MAX_LANTERNS = 8;
+  const currentLanterns = layer.querySelectorAll('.lantern').length;
+  if (currentLanterns >= MAX_LANTERNS) {
+    return;
+  }
 
   const lantern = document.createElement('div');
   lantern.className = 'lantern';
@@ -79,7 +84,7 @@ async function submitLantern(event) {
   if (!text) return;
 
   try {
-    const res = await fetch(`${API_BASE}/api/lanterns`, {
+    const res = await fetch(`/api/lanterns`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: text }),
