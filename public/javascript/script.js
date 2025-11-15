@@ -34,7 +34,6 @@ function spawnLantern(text) {
   lantern.appendChild(msgBox);
   layer.appendChild(lantern);
 
-  // สุ่มตำแหน่ง X กระจายทั้งจอ
   let candidateX = Math.random() * 100;
   const MIN_DISTANCE = 12;
   let tries = 0;
@@ -55,7 +54,6 @@ function spawnLantern(text) {
     lastXPositions.shift();
   }
 
-  // timing animation
   const duration = 14 + Math.random() * 10;
   const delay = Math.random() * 1;
   const drift = (Math.random() - 0.5) * 80;
