@@ -1,0 +1,184 @@
+@font-face {
+  font-family: 'LMF Cookie';
+  src: url('../fonts/KMPakJaiDemo.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* หน้าเว็บหลัก */
+.page {
+  position: relative;
+  min-height: 100vh;
+  color: #ffffff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  background-image: url("../img/BG.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ข้อความหัวเรื่อง */
+.hero {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 700;
+  line-height: 1.4;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* เลเยอร์ที่เอาไว้ปล่อยโคมลอย */
+.lantern-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ส่วนฟอร์มด้านล่าง */
+.input-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+/* กล่องฟอร์มแคปซูล */
+.wish-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  padding: 8px 10px;
+  width: 90%;
+  max-width: 520px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+}
+
+/* ช่องพิมพ์ข้อความ */
+.wish-form input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: #333333;
+  padding: 6px 10px;
+}
+
+.wish-form input::placeholder {
+  color: #9ca3af;
+}
+
+/* ปุ่มปล่อยโคมลอย */
+.wish-form button {
+  border: none;
+  outline: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.wish-form button:hover {
+  background: #2563eb;
+}
+
+.wish-form button:active {
+  transform: scale(0.96);
+}
+
+
+.lantern {
+  position: absolute;
+  width: 150px;
+  height: 220px;
+  background-image: url("../img/lantern.png"); /* ใช้ไฟล์โคมใหม่ */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  bottom: -220px;
+  
+}
+
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120vh) translateX(var(--drift, 0px));
+    opacity: 0;
+  }
+}
+
+
+.lantern.float-up {
+  animation-name: floatUp;
+  animation-timing-function: linear;
+  animation-duration: var(--duration, 18s);
+  animation-delay: var(--delay, 0s);
+}
+
+/*ข้อความบนโคมลอย*/
+.lantern-text {
+  position: absolute;
+  top: 48%;            
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 70%;          
+  max-height: 40%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  padding: 4px;
+  overflow: hidden;
+  word-wrap: break-word;
+  line-height: 1.3;
+  font-size: 0.9rem;
+
+  font-family: 'LMF Cookie', system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+
+  color: #222222;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+}
