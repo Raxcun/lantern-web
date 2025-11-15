@@ -1,40 +1,36 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
-const path = require("path");
-app.use(express.static(path.join(__dirname, "public")));
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "html", "index.html"));
-});
 
 console.log('URI:', process.env.MONGODB_URI);
 
 const Lantern = require('./models/Lantern');
 const app = express();
 
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => {
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
     console.log('Connected to MongoDB');
-})
-.catch((err) => {
+  })
+  .catch((err) => {
     console.error('Error connecting to MongoDB:', err);
-});
+  });
 
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('/', (req, res) => {
-    res.send('Lantern Message API is running');
+  res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
 });
+
 
 app.post('/api/lanterns', async (req, res) => {
   try {
-    console.log(' POST /api/lanterns body =', req.body);
+    console.log('POST /api/lanterns body =', req.body);
 
     const { message } = req.body;
 
@@ -49,7 +45,6 @@ app.post('/api/lanterns', async (req, res) => {
     res.status(201).json(lantern);
   } catch (err) {
     console.error('Error in POST /api/lanterns:', err);
-    // ชั่วคราวให้ดู error จริง ๆ จะได้ debug ง่าย
     res.status(500).json({ error: err.message });
   }
 });
@@ -57,8 +52,8 @@ app.post('/api/lanterns', async (req, res) => {
 app.get('/api/lanterns', async (req, res) => {
   try {
     const items = await Lantern.find()
-      .sort({ createdAt: -1 }) // ใหม่ → เก่า
-      .limit(50);              // เอาแค่ 50 อันพอ
+      .sort({ createdAt: -1 })
+      .limit(50);
     res.json(items);
   } catch (err) {
     console.error(err);
@@ -66,7 +61,7 @@ app.get('/api/lanterns', async (req, res) => {
   }
 });
 
-
+// -------------------- Start server --------------------
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
