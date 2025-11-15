@@ -4,65 +4,49 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
-console.log('URI:', process.env.MONGODB_URI);
-
-const Lantern = require('./models/Lantern');
 const app = express();
+const Lantern = require('./models/Lantern');
 
+// -------------------- MONGO CONNECT --------------------
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch((err) => {
-    console.error('Error connecting to MongoDB:', err);
-  });
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.error('MongoDB error:', err));
 
+// -------------------- MIDDLEWARE --------------------
 app.use(cors());
 app.use(express.json());
 
+// เสิร์ฟไฟล์ static
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ให้หน้าเว็บหลักแสดง index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
 });
 
-
+// -------------------- API --------------------
 app.post('/api/lanterns', async (req, res) => {
   try {
-    console.log('POST /api/lanterns body =', req.body);
-
     const { message } = req.body;
-
-    if (!message || !message.trim()) {
-      console.log('message is empty');
-      return res.status(400).json({ error: 'message is required' });
-    }
+    if (!message?.trim()) return res.status(400).json({ error: 'message is required' });
 
     const lantern = await Lantern.create({ message });
-    console.log('Saved lantern:', lantern);
-
     res.status(201).json(lantern);
   } catch (err) {
-    console.error('Error in POST /api/lanterns:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
 app.get('/api/lanterns', async (req, res) => {
   try {
-    const items = await Lantern.find()
-      .sort({ createdAt: -1 })
-      .limit(50);
+    const items = await Lantern.find().sort({ createdAt: -1 }).limit(50);
     res.json(items);
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: 'server error' });
   }
 });
 
-// -------------------- Start server --------------------
+// -------------------- START SERVER --------------------
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on ${PORT}`));
