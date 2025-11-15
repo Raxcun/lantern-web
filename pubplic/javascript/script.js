@@ -1,12 +1,14 @@
+const hostname = window.location.hostname;
+
 const API_BASE =
-  window.location.hostname === 'localhost'
+  hostname === 'localhost' || hostname === '127.0.0.1'
     ? 'http://localhost:4000'
     : '';
 
 let lanternMessages = [];
 let lastXPositions = [];
 
-// จัดข้อความ: ทุก ๆ wordsPerLine คำขึ้นบรรทัดใหม่
+
 function formatTextByWords(text, wordsPerLine = 2) {
   const words = text.trim().split(/\s+/);
   let lines = [];
@@ -27,7 +29,7 @@ function spawnLantern(text) {
 
   const msgBox = document.createElement('div');
   msgBox.className = 'lantern-text';
-  msgBox.textContent = formatTextByWords(text, 3);
+  msgBox.textContent = formatTextByWords(text, 2);
 
   lantern.appendChild(msgBox);
   layer.appendChild(lantern);
