@@ -1,16 +1,21 @@
-const API_BASE = 'http://localhost:4000';
-let lanternMessages = [];
-let lastXPositions = []; 
+const API_BASE =
+  window.location.hostname === 'localhost'
+    ? 'http://localhost:4000'
+    : '';
 
+let lanternMessages = [];
+let lastXPositions = [];
+
+// จัดข้อความ: ทุก ๆ wordsPerLine คำขึ้นบรรทัดใหม่
 function formatTextByWords(text, wordsPerLine = 2) {
   const words = text.trim().split(/\s+/);
   let lines = [];
 
   for (let i = 0; i < words.length; i += wordsPerLine) {
-    lines.push(words.slice(i, i + wordsPerLine).join(" "));
+    lines.push(words.slice(i, i + wordsPerLine).join(' '));
   }
 
-  return lines.join("\n");
+  return lines.join('\n');
 }
 
 function spawnLantern(text) {
@@ -27,9 +32,8 @@ function spawnLantern(text) {
   lantern.appendChild(msgBox);
   layer.appendChild(lantern);
 
-
+  // สุ่มตำแหน่ง X กระจายทั้งจอ
   let candidateX = Math.random() * 100;
-
   const MIN_DISTANCE = 12;
   let tries = 0;
 
@@ -44,16 +48,15 @@ function spawnLantern(text) {
 
   lantern.style.left = candidateX + 'vw';
 
-  // เก็บตำแหน่งล่าสุด (จำแค่ 4 อันพอ)
   lastXPositions.push(candidateX);
   if (lastXPositions.length > 4) {
     lastXPositions.shift();
   }
 
-  // ------- animation timing -------
-  const duration = 14 + Math.random() * 10; // 14–24 วินาที
-  const delay = Math.random() * 1;          // ดีเลย์เล็กน้อย 0–1 วินาที
-  const drift = (Math.random() - 0.5) * 80; // ซ้ายขวาเบา ๆ
+  // timing animation
+  const duration = 14 + Math.random() * 10;
+  const delay = Math.random() * 1;
+  const drift = (Math.random() - 0.5) * 80;
 
   lantern.style.setProperty('--duration', duration + 's');
   lantern.style.setProperty('--delay', delay + 's');
@@ -68,7 +71,6 @@ function spawnLantern(text) {
   });
 }
 
-// ส่งข้อความ + เซฟ DB + spawn โคมใหม่ทันที
 async function submitLantern(event) {
   event.preventDefault();
 
@@ -91,10 +93,7 @@ async function submitLantern(event) {
     const data = await res.json();
     console.log('saved:', data);
 
-    // ปล่อยโคมใบใหม่
     spawnLantern(data.message);
-
-    // เก็บข้อความไว้ใช้ในลูปอนาคต
     lanternMessages.push(data.message);
 
     input.value = '';
@@ -116,12 +115,10 @@ async function initLanterns() {
 
     console.log('loaded messages:', lanternMessages);
 
-    // ปล่อยโคมชุดแรก 3–5 อันแบบเรียง ๆ ก่อน
     lanternMessages.slice(0, 5).forEach((msg, index) => {
       setTimeout(() => spawnLantern(msg), index * 700);
     });
 
-    // จากนั้นเริ่มลูปปล่อยเรื่อย ๆ
     if (lanternMessages.length > 0) {
       startLanternLoop();
     }
@@ -130,7 +127,6 @@ async function initLanterns() {
   }
 }
 
-// ลูปสุ่มปล่อยโคมเรื่อย ๆ
 function startLanternLoop() {
   function loop() {
     if (lanternMessages.length === 0) {
@@ -142,7 +138,7 @@ function startLanternLoop() {
 
     spawnLantern(msg);
 
-    const delay = 2000 + Math.random() * 1000; // 2000–3000 ms
+    const delay = 2000 + Math.random() * 1000; // 2–3 วินาที
     setTimeout(loop, delay);
   }
 
